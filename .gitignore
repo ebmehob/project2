@@ -1,0 +1,9 @@
+#python and system cache
+/__pycache__
+.DS_Store
+
+#as required trained model and result of inference excluded from repo
+/outputs
+/data
+
+#for evaluation purposes notebooks folder was commited alongside with mlflow runs

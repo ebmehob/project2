@@ -1,0 +1,23 @@
+artifact_path: /Users/mac/Desktop/Final_Project_Module9_Yevmenov_Kiril/notebooks/mlruns/1/models/m-24bfe5753415468ea150e8545647185e/artifacts
+flavors:
+  python_function:
+    config:
+      device: null
+    data: data
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.pytorch
+    pickle_module_name: mlflow.pytorch.pickle_module
+    python_version: 3.11.14
+  pytorch:
+    code: null
+    model_data: data
+    pytorch_version: 2.9.1
+mlflow_version: 3.9.0
+model_id: m-24bfe5753415468ea150e8545647185e
+model_size_bytes: 280153
+model_uuid: m-24bfe5753415468ea150e8545647185e
+prompts: null
+run_id: 7a227b038ac84dc1832110c7b9f47404
+utc_time_created: '2026-02-07 17:08:26.887933'

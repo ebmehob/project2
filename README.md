@@ -1,5 +1,85 @@
+# Sentiment Analysis on Movie Reviews
+
+## Project Overview
+This project focuses on building a binary classification model to predict the sentiment (positive or negative) of movie reviews. The pipeline includes extensive Exploratory Data Analysis (EDA), text preprocessing (cleaning, tokenization, stemming/lemmatization), feature engineering using TF-IDF, and a comparison between a baseline Machine Learning model (Logistic Regression) and a custom Neural Network built with PyTorch.
+
+## 1. Data Analysis & Preparation
+
+### Dataset
+* **Source:** The project utilizes a train dataset (`train.csv`) and an inference dataset (`inference.csv`).
+* **Size:**  Train: 40,000 entries (reduced to 39,728 after deduplication).
+    * Inference: 10,000 entries.
+* **Target Variable:** `sentiment` (Binary: 1 for Positive, 0 for Negative).
+* **Class Balance:** The dataset is perfectly balanced (50/50 split), making it ideal for evaluation without needing resampling techniques.
+
+### Exploratory Data Analysis (EDA)
+* **Data Quality:** Checked for missing values (None found).
+* **Duplicates:** Identified and removed 272 duplicate rows in the training set and 13 in the inference set.
+* **Text Length:** Analyzed review lengths; most are under 2,000 characters, with outliers up to 14,000 characters.
+
+## 2. Feature Engineering
+
+### Preprocessing Pipeline
+1.  **Cleaning:** Converted text to lowercase, removed punctuation and numbers (keeping only `a-z` and spaces).
+2.  **Tokenization:** Split text into individual tokens.
+3.  **Stopword Removal:** Removed common English stopwords using NLTK.
+4.  **Normalization Experiments:**
+    * **Lemmatization (WordNet):** Accurate but computationally expensive due to POS tagging requirements.
+    * **Stemming (Porter):** Faster but more aggressive (chopping word ends).
+    * *Decision:* **Stemming** was chosen for the final pipeline as it provided a faster runtime and slightly better accuracy (approx. +0.5%) compared to Lemmatization for this specific dataset.
+
+### Vectorization
+* **TF-IDF (Term Frequency-Inverse Document Frequency):** Used to convert text data into numerical vectors. This performed better than CountVectorizer.
+* **Dimensionality Reduction:** For the Neural Network experiments, features were limited (`max_features=10000`) to optimize computation time.
+
+## 3. Modeling & Results
+
+The project compared a classic statistical approach against a deep learning approach.
+
+### Baseline Model: Logistic Regression
+* **Configuration:** Standard Logistic Regression.
+* **Input:** Stemmed Text + TF-IDF Vectorization.
+* **Performance:**
+    * **Accuracy:** **88.79%**
+    * *Note:* Outperformed the CountVectorizer variant (87.19%) and the Lemmatized variant (88.29%).
+
+### Neural Network (PyTorch)
+* **Architecture:** Custom Feed-Forward Neural Network (`TFIDF_NN`).
+    * **Input Layer:** 10,000 features (TF-IDF).
+    * **Hidden Layers:** 2 layers of 8 neurons each with ReLU activation.
+    * **Regularization:** Dropout (0.5) to prevent overfitting.
+    * **Output:** Single neuron (Logits) for binary classification.
+* **Training:**
+    * **Loss Function:** `BCEWithLogitsLoss`.
+    * **Optimizer:** Adam (`lr=0.001`).
+    * **Tracking:** Experiments tracked using **MLflow**.
+* **Performance (Epoch 5):**
+    * **Accuracy:** ~88.10%
+    * **ROC AUC:** 0.9588
+    * **F1 Score:** 0.8755
+
+## 4. Conclusions & Key Findings
+
+1.  **Simplicity Wins:** The baseline Logistic Regression model achieved the highest accuracy (~88.8%) with significantly faster training and inference times compared to the Neural Network.
+2.  **Preprocessing Matters:** Stemming proved to be more effective than Lemmatization for this specific "Bag of Words" approach, likely due to the reduction of feature space dimensionality without losing critical sentiment signals.
+3.  **Neural Network Limitation:** A simple Feed-Forward Network on TF-IDF data does not capture word order or context. 
+
+### Future Improvements
+To the 89% accuracy, the following approaches could be explored:
+* **Word Embeddings:** Use Word2Vec, GloVe, or FastText to capture semantic meaning.
+* **Deep Learning Architectures:** Implement **LSTMs** (Long Short-Term Memory).
+* **Transformers:** Utilize pre-trained models like **BERT** or **RoBERTa**, which utilize attention mechanisms to understand context better than frequency-based methods.
+
+## 5. Requirements (in requirements.txt - usage for notebook)
+To run this notebook, the following libraries are required:
+* `pandas`, `numpy`
+* `nltk` (Stopwords, WordNet)
+* `scikit-learn`
+* `torch` (PyTorch)
+* `mlflow`
+
+
 # Sentiment Analysis Pipeline
-This project implements a complete end-to-end Machine Learning pipeline for sentiment analysis. It handles everything from downloading raw data and preprocessing text to training a Logistic Regression model and running inference on new datasets.
 
 Each stage of the pipeline is containerized using Docker to ensure environment consistency and ease of deployment.
 
@@ -97,4 +177,4 @@ Notebooks holds notebook with datascience part of task, and mlflow experiments
 
 ## Requirements
 Python 3.9 (base image for containers).
-Key Libraries: pandas, scikit-learn, nltk, joblib, requests.
+Key Libraries: pandas, scikit-learn, nltk, joblib, requests. (all files have different requirements, that was hardcoded in Dockerfiles, since creating ones was decided to be not suitable)

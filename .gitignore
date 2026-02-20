@@ -5,5 +5,8 @@
 #as required trained model and result of inference excluded from repo
 /outputs
 /data
+/notebooks/mlruns
+/notebooks/mlflow.db
+
 
 #for evaluation purposes notebooks folder was commited alongside with mlflow runs
